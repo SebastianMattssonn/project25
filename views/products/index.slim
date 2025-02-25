@@ -1,0 +1,8 @@
+h1 Shop
+ul
+  - products.each do |product|
+    li
+      a href="/products/#{product['Product_Id']}" = product['Name']
+      p = product['Description']
+      p $#{product['Price']}
+      img src="/img/#{product['Image']}" alt=product['Name']

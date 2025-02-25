@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title My E-Commerce Site
+    link rel="stylesheet" href="/css/styles.css"
+  body
+    nav
+      a href="/" Home
+      a href="/shop" Shop Now
+      a href="/contact" Contact Us
+      - if session[:user_id]
+        a href="/logout" Logout
+      - else
+        a href="/login" Login
+        a href="/register" Register
+    == yield
