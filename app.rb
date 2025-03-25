@@ -13,7 +13,7 @@ get '/' do
   slim :home, locals: { products: featured_products }
 end
 
-#Produktsida (Visa alla produkter)
+#Produktsida
 get '/shop' do
   products = DB.execute("SELECT * FROM Products")
   slim :"products/index", locals: { products: products }

@@ -3,14 +3,23 @@ html
   head
     title My E-Commerce Site
     link rel="stylesheet" href="/css/styles.css"
+    link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   body
+    // Navbar
     nav
-      a href="/" Home
-      a href="/shop" Shop Now
-      a href="/contact" Contact Us
-      - if session[:user_id]
-        a href="/logout" Logout
-      - else
-        a href="/login" Login
-        a href="/register" Register
+      div.nav-links
+        a href="/" Home
+        a href="/shop" Shop Now
+        a href="/contact" Contact Us
+        - if session[:user_id]
+          a href="/logout" Logout
+        - else
+          a href="/login" Login
+          a href="/register" Register
+      
+      // Shopping cart container
+      div.cart-container
+        a href="/cart"
+          i class="fa-solid fa-cart-shopping cart-icon"
+
     == yield

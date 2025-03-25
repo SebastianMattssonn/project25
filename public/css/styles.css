@@ -1,29 +1,46 @@
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f8f8f8;
-  }
-  
-  nav {
-    background: #333;
-    padding: 10px;
-  }
-  
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin-right: 15px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    background: white;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
+  font-family: Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+  background-color: #f8f8f8;
+}
+
+/* Navbar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #333;
+  padding: 15px 20px;
+  position: relative;
+}
+
+/* Nav länkar */
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Shopping cart container */
+.cart-container {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%); /* Centrera vertikalt */
+}
+
+.cart-icon {
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
