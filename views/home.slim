@@ -1,4 +1,8 @@
-h1 Welcome to Our Store!
+- if username
+  h1 Welcome to Our Store, #{username}!
+- else
+  h1 Welcome to Our Store!
+
 h2 Featured Products
 ul
   - products.each do |product|
