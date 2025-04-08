@@ -7,6 +7,21 @@ require_relative 'db/databas'
 
 enable :sessions
 
+# Helper-metoder
+helpers do
+  def current_user
+    if session[:user_id]
+      DB.execute("SELECT * FROM Users WHERE User_Id = ?", session[:user_id]).first
+    else
+      nil
+    end
+  end
+
+  def admin?
+    current_user && current_user["Admin"] == 1
+  end
+end
+
 # Initiera kundvagn innan varje request
 before do
   session[:cart] ||= []
@@ -38,7 +53,7 @@ get '/products/:id' do
   slim :"products/show", locals: { product: product }
 end
 
-# Lägg till i kundvagn – endast för inloggade
+# Lägg till i kundvagn – endast inloggade
 post '/cart/add/:id' do
   unless session[:user_id]
     session[:message] = "Du måste logga in för att fortsätta."
@@ -104,7 +119,7 @@ post '/login' do
 
   if user && BCrypt::Password.new(user["Password"]) == password
     session[:user_id] = user["User_Id"]
-    session[:message] = nil # Rensa ev. gammalt meddelande
+    session[:message] = nil
     redirect '/'
   else
     redirect '/login'
@@ -115,4 +130,38 @@ end
 get '/logout' do
   session.clear
   redirect '/'
+end
+
+# ========== ADMIN-SYSTEM ==========
+
+# Adminpanel
+get '/admin' do
+  unless admin?
+    session[:message] = "Du måste vara admin för att gå hit."
+    redirect '/'
+  end
+
+  products = DB.execute("SELECT * FROM Products")
+  slim :"admin/dashboard", locals: { products: products }
+end
+
+# Form för att lägga till produkt
+get '/admin/new' do
+  redirect '/' unless admin?
+  slim :"admin/new_product"
+end
+
+# Skapa ny produkt
+post '/admin/create' do
+  redirect '/' unless admin?
+
+  name = params[:name]
+  description = params[:description]
+  price = params[:price]
+  image = params[:image]
+
+  DB.execute("INSERT INTO Products (Name, Description, Price, Image) VALUES (?, ?, ?, ?)",
+             [name, description, price, image])
+
+  redirect '/admin'
 end

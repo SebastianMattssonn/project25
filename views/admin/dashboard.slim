@@ -1,0 +1,10 @@
+h1 Adminpanel
+a href="/admin/new" Lägg till ny produkt
+
+ul
+  - products.each do |product|
+    li
+      strong = product["Name"]
+      |  – $#{product["Price"]}
+      br
+      img src="/img/#{product['Image']}" width="100"

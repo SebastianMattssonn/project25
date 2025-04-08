@@ -1,0 +1,20 @@
+h1 Lägg till ny produkt
+
+form action="/admin/create" method="post"
+  label Namn:
+  input type="text" name="name" required
+  br
+
+  label Beskrivning:
+  textarea name="description"
+  br
+
+  label Pris:
+  input type="number" name="price" step="0.01" required
+  br
+
+  label Bild (filnamn):
+  input type="text" name="image" required
+  br
+
+  button type="submit" Lägg till
