@@ -1,3 +1,7 @@
+- if session[:message]
+  p style="color: red;" = session[:message]
+  - session[:message] = nil
+
 h2 Login
 form action="/login" method="post"
   label for="username" Username:

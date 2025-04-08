@@ -7,10 +7,15 @@ require_relative 'db/databas'
 
 enable :sessions
 
+# Initiera kundvagn innan varje request
+before do
+  session[:cart] ||= []
+end
+
 # Startsida
 get '/' do
   featured_products = DB.execute("SELECT * FROM Products ORDER BY RANDOM() LIMIT 4")
-  
+
   if session[:user_id]
     user = DB.execute("SELECT Username FROM Users WHERE User_Id = ?", [session[:user_id]]).first
     username = user ? user["Username"] : nil
@@ -33,6 +38,36 @@ get '/products/:id' do
   slim :"products/show", locals: { product: product }
 end
 
+# Lägg till i kundvagn – endast för inloggade
+post '/cart/add/:id' do
+  unless session[:user_id]
+    session[:message] = "Du måste logga in för att fortsätta."
+    redirect '/login'
+  end
+
+  session[:cart] << params[:id]
+  redirect '/cart'
+end
+
+# Ta bort från kundvagn
+post '/cart/remove/:id' do
+  session[:cart].delete_at(session[:cart].index(params[:id]) || session[:cart].length)
+  redirect '/cart'
+end
+
+# Visa kundvagn
+get '/cart' do
+  if session[:cart].empty?
+    cart_products = []
+  else
+    placeholders = session[:cart].map { '?' }.join(',')
+    query = "SELECT * FROM Products WHERE Product_Id IN (#{placeholders})"
+    cart_products = DB.execute(query, session[:cart])
+  end
+
+  slim :"cart/cart", locals: { cart_products: cart_products }
+end
+
 # Registrering
 get '/register' do
   slim :"auth/register"
@@ -52,7 +87,7 @@ post '/register' do
     DB.execute("INSERT INTO Users (Username, Password) VALUES (?, ?)", [username, password_digest])
     redirect '/login'
   rescue SQLite3::ConstraintException
-    redirect '/register' # Hanterar om användarnamnet redan finns
+    redirect '/register'
   end
 end
 
@@ -69,6 +104,7 @@ post '/login' do
 
   if user && BCrypt::Password.new(user["Password"]) == password
     session[:user_id] = user["User_Id"]
+    session[:message] = nil # Rensa ev. gammalt meddelande
     redirect '/'
   else
     redirect '/login'

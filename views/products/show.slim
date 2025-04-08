@@ -3,3 +3,6 @@ img src="/img/#{product['Image']}" alt=product['Name']
 p = product['Description']
 p $#{product['Price']}
 a href="/shop" Back to Shop
+
+form action="/cart/add/#{product['Product_Id']}" method="post"
+  button type="submit" Add to Cart
